@@ -277,7 +277,7 @@ module ActiveRecord
       def test_tables_logs_name
         sql = <<-SQL
           SELECT name FROM sqlite_master
-          WHERE type IN ('table','view') AND name <> 'sqlite_sequence'
+          WHERE type = 'table' AND name <> 'sqlite_sequence'
         SQL
         assert_logged [[sql.squish, "SCHEMA", []]] do
           @conn.tables
@@ -296,12 +296,10 @@ module ActiveRecord
         with_example_table do
           sql = <<-SQL
             SELECT name FROM sqlite_master
-            WHERE type IN ('table','view') AND name <> 'sqlite_sequence' AND name = 'ex'
+            WHERE type = 'table' AND name <> 'sqlite_sequence' AND name = 'ex'
           SQL
           assert_logged [[sql.squish, "SCHEMA", []]] do
-            ActiveSupport::Deprecation.silence do
-              assert @conn.table_exists?("ex")
-            end
+            assert @conn.table_exists?("ex")
           end
         end
       end
